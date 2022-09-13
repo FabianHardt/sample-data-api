@@ -6,6 +6,6 @@ This sample data API connects to a Postgres database, which is containing Advent
 The overall start script builds Postgres and Spring Boot Docker containers and starts them afterwards. Docker-Compose is used for that, so it has to be installed on your system.
 
 ```bash
-bash start.sh
+docker-compose up --build
 ```
 

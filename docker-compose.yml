@@ -1,6 +1,7 @@
 services:
   postgres:
     image: pg-adventureworks:1.0
+    build: ./Postgres
     restart: always
     environment:
       - POSTGRES_PASSWORD=postgres
@@ -8,8 +9,9 @@ services:
       - 5432
   data-api:
     image: sample-data-api:1.0
+    build: .
     environment:
-      - DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
     ports:
       - 8080:9090
     links:
