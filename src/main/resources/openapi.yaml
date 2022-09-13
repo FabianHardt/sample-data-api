@@ -1,0 +1,129 @@
+openapi: 3.0.3
+info:
+  title: Sample Data-API
+  description: |-
+    Just a sample Data-API
+  contact:
+    email: fabian.hardt@opitz-consulting.com
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+tags:
+  - name: finance
+    description: Get finance fact data
+paths:
+  /finance:
+    get:
+      tags:
+        - finance
+      summary: Gets all FactFinance rows
+      description: Get all rows from FactFinance Table
+      operationId: getAllFinanceFacts
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FactFinance'
+        '400':
+          description: Invalid status value
+  /finance/{financekey}:
+    get:
+      tags:
+        - finance
+      summary: Gets exactly one FactFinance row
+      description: Get one row from FactFinance
+      operationId: getFinanceFactsByKey
+      parameters:
+        - name: financekey
+          in: path
+          required: true
+          explode: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FactFinance'
+        '400':
+          description: key not found
+  /finance-aggregation:
+    get:
+      tags:
+        - finance
+      summary: Get aggregated finance facts for one date
+      description: Get aggregated finance facts for one date
+      operationId: aggdate
+      parameters:
+        - name: fromdate
+          in: query
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: todate
+          in: query
+          required: false
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinaceAggregate'
+        '400':
+          description: key not found
+components:
+  schemas:
+    FinaceAggregate:
+      type: object
+      properties:
+        amount:
+          type: integer
+          format: int64
+          example: 667788
+    FactFinance:
+      type: object
+      x-class-extra-annotation: '@javax.persistence.Entity(name="factfinance")'
+      properties:
+        financekey:
+          type: integer
+          format: int64
+          x-field-extra-annotation: "@javax.persistence.Id"
+          example: 10
+        accountkey:
+          type: integer
+          format: int64
+          example: 123
+        amount:
+          type: integer
+          format: int64
+          example: 654
+        date:
+          type: string
+          format: date-time
+        datekey:
+          type: string
+          example: "20220101"
+        departmentgroupkey:
+          type: integer
+          format: int64
+          example: 222
+        organizationkey:
+          type: integer
+          format: int64
+          example: 333
+        scenariokey:
+          type: integer
+          format: int64
+          example: 333
