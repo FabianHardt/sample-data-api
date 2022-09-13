@@ -9,9 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import oc.api.dataapi.model.FactFinance;
-import oc.api.dataapi.repo.FactFinaceAggregationRepository;
 import oc.api.dataapi.repo.FactFinaceRepository;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +21,12 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase
-class FactFinanceAggregationControllerTest {
+class FactFinanceControllerTest {
 
   @Autowired
   MockMvc mockMvc;
   @Autowired
-  FactFinaceAggregationRepository repo;
+  FactFinaceRepository repo;
 
   @BeforeEach
   void setUp() {
@@ -39,20 +37,20 @@ class FactFinanceAggregationControllerTest {
   }
 
   @Test
-  void aggdate() throws Exception {
-    mockMvc.perform(get("/api/v1/finance-aggregation")
-            .param("fromdate", "20131228")
-            .param("todate", "20131229"))
+  void getAllFinanceFacts() throws Exception {
+    mockMvc.perform(get("/api/v1/finance"))
         .andDo(print())
         .andExpect(status().is2xxSuccessful())
-        .andExpect(jsonPath("$.amount", equalTo(150)));
+        .andExpect(jsonPath("$", hasSize(2)))
+        .andExpect(jsonPath("$.[0].amount", equalTo(50)))
+        .andExpect(jsonPath("$.[1].amount", equalTo(100)));
   }
 
   @Test
-  void aggdateError() throws Exception {
-    mockMvc.perform(get("/api/v1/finance-aggregation")
-            .param("fromdate", "20110001"))
+  void getFinanceFactsByKey() throws Exception {
+    mockMvc.perform(get("/api/v1/finance/1"))
         .andDo(print())
-        .andExpect(status().is4xxClientError());
+        .andExpect(status().is2xxSuccessful())
+        .andExpect(jsonPath("$.amount", equalTo(50)));
   }
 }

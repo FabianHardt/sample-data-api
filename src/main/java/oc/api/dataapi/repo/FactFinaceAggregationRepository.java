@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FactFinaceAggregationRepository extends CrudRepository<FactFinance, Long> {
 
-  @Query(value = "SELECT SUM(amount) FROM factfinance u WHERE u.datekey between ?1 and ?2", nativeQuery = true)
+  @Query(value = "SELECT COALESCE(SUM(amount), 0) FROM factfinance u WHERE u.datekey between ?1 and ?2", nativeQuery = true)
   public Long getAmountInRange(long datefrom, long dateto);
 
 }
