@@ -1,0 +1,70 @@
+{
+	"info": {
+		"_postman_id": "a1c94f3a-ef42-4f2d-9e74-f5d5b4e24e0d",
+		"name": "DOAG2022-Data-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all rows",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9090/api/v1/finance",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"v1",
+						"finance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get amount in range",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "localhost:9090/api/v1/finance-aggregation?fromdate=20101229&todate=20131228",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"v1",
+						"finance-aggregation"
+					],
+					"query": [
+						{
+							"key": "fromdate",
+							"value": "20101229"
+						},
+						{
+							"key": "todate",
+							"value": "20110001",
+							"disabled": true
+						},
+						{
+							"key": "todate",
+							"value": "20131228"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
