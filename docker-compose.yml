@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: pg-adventureworks:1.0
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    expose:
+      - 5432
+  data-api:
+    image: sample-data-api:1.0
+    environment:
+      - DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+    ports:
+      - 8080:9090
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    restart: always
