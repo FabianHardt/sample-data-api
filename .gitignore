@@ -1,5 +1,4 @@
 /target/
-!.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
 .apt_generated
@@ -199,3 +198,5 @@ README.html
 *.iml
 .idea
 .exercism
+
+!.mvn/wrapper/maven-wrapper.jar

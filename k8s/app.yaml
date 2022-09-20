@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    kuma.io/sidecar-injection: enabled
+  name: data-api
+  spec:
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pg-password
+  namespace: data-api
+type: Opaque
+data:
+  POSTGRES_PASSWORD: cG9zdGdyZXM=
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: data-api
+  creationTimestamp: null
+  labels:
+    app: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: postgres
+      annotations:
+        kuma.io/mesh: doag
+    spec:
+      imagePullSecrets:
+      - name: ocirsecret
+      containers:
+      - image: fra.ocir.io/frruuyqdswys/demo-services/pg-adventureworks:1.0.0
+        envFrom:
+        - secretRef:
+            name: pg-password
+        name: pg-adventureworks
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: postgres
+  name: postgres
+  namespace: data-api
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: postgres
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: data-api-service-0
+  namespace: data-api
+  labels:
+    app: data-service
+spec:
+  type: ClusterIP
+  selector:
+    app: data-service
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: data-service
+  namespace: data-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-service
+  template:
+    metadata:
+      labels:
+        app: data-service
+        version: v1
+      annotations:
+        kuma.io/mesh: doag
+    spec:
+      containers:
+        - name: data-service
+          env:
+          - name: SPRING_DATASOURCE_URL
+            value: "jdbc:postgresql://postgres:5432/postgres"
+          image: fra.ocir.io/frruuyqdswys/demo-services/data-api-service:1.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+      imagePullSecrets:
+        - name: ocirsecret
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: data-api-ingress
+  namespace: data-api
+  annotations:
+    kubernetes.io/ingress.class: kong
+    konghq.com/strip-path: "true"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /data-api/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: data-api-service-0
+                port: 
+                  number: 8080

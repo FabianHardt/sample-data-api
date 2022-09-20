@@ -1,14 +1,14 @@
 package oc.api.dataapi.controller;
 
-import oc.api.dataapi.endpoint.FinanceAggregationApi;
-import oc.api.dataapi.model.FinaceAggregate;
-import oc.api.dataapi.service.FactFinanceAggregationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import oc.api.dataapi.endpoint.FinanceAggregationApi;
+import oc.api.dataapi.model.FinaceAggregate;
+import oc.api.dataapi.service.FactFinanceAggregationService;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/")
 public class FactFinanceAggregationController implements FinanceAggregationApi {
 
   private final FactFinanceAggregationService factFinanceAggregationService;
